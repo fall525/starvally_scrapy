@@ -13,13 +13,26 @@ MONGODB_COLL_NAME="vally1"
 
 # 爬虫配置
 SEED_URLS = [
-    "https://zh.stardewvalleywiki.com/Stardew_Valley_Wiki"
+    "https://stardewvalleywiki.com/Stardew_Valley_Wiki",
+    "https://stardewvalleywiki.com/Modding_talk:Mod_compatibility",
+    "https://stardewvalleywiki.com/User_talk:Margotbean/Archive_2024",
+    "https://stardewvalleywiki.com/Emily"
 ]
 
 # 爬虫任务调度
 CRAWLER_SLEEP_TIME = 1  # 每个任务之间的休眠时间（秒）
 CRAWLER_RETRY_DELAY = 5  # 任务失败后的重试延迟（秒）
 
-# 日志配置
-LOG_FILE = "crawler.log"
-LOG_LEVEL = "INFO"  # 可选: DEBUG, INFO, WARNING, ERROR, CRITICAL
+
+# 分布式 URL 分发策略
+# "fifo" (先进先出), "priority" (优先级队列), "round_robin" (轮询分配)
+URL_DISTRIBUTION_STRATEGY = "priority"
+# URL 优先级规则
+PRIORITY_RULES = {
+    1: [r"/User_talk"],  # 最高优先级
+    2: [r"/Abigail", r"/Emily",r"/Penny"],  # 高优先级
+    3: [r"/Modding_tal"],  # 中等优先级
+}
+
+# 配置分布式节点数 (仅对轮询分配策略生效)
+DISTRIBUTED_NODE_COUNT = 2

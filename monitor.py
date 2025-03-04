@@ -43,61 +43,9 @@ class MonitorManager:
                 status_count[status] += 1
         return status_count
 
-
-# 初始化 MonitorManager 和 DBManager
-# monitor_manager = MonitorManager()
-# db_manager = DBManager()
-
-# def show_crawler_status():
-#     """显示所有爬虫进程的状态信息"""
-#     active_pids = monitor_manager.get_active_pids()
-#     print(f"\n🕵️‍♂️ 当前活跃爬虫进程: {len(active_pids)} 个")
-    
-#     for pid in active_pids:
-#         status_info = monitor_manager.get_crawler_status(pid)
-#         if status_info:
-#             print(f"🐍 进程 {pid} | 状态: {status_info.get('status')} | 当前URL: {status_info.get('current_url')} | 上次活动: {status_info.get('last_active_time')}")
-#         else:
-#             print(f"❓ 未找到进程 {pid} 的状态信息")
-
-# def show_queue_status():
-#     """显示任务队列状态"""
-#     url_count = monitor_manager.get_queue_size()
-#     failed_count = monitor_manager.get_failed_queue_size()
-#     print(f"📥 待爬取 URL 数量: {url_count}, 失败 URL 数量: {failed_count}")
-
-# def show_db_status():
-#     """显示 MongoDB 数据库状态"""
-#     page_count = db_manager.count_pages()
-#     print(f"📚 已存储页面数量: {page_count}")
-
-# def show_url_status_count():
-#     """显示不同状态的URL数量"""
-#     status_count = monitor_manager.get_all_status_count()
-#     print(f"📊 URL 状态统计: 爬取中: {status_count['crawling']} | 已完成: {status_count['done']} | 失败: {status_count['failed']}")
-
-# def monitor_status(interval=10):
-#     """主监控循环，每隔 interval 秒刷新一次状态信息"""
-#     try:
-#         while True:
-#             print("\n📊 正在刷新爬虫状态...")
-#             show_queue_status()
-#             show_db_status()
-#             show_url_status_count()
-#             show_crawler_status()
-#             time.sleep(interval)
-#     except KeyboardInterrupt:
-#         print("🛑 监控程序已退出")
-
-# if __name__ == "__main__":
-#     print("🚀 启动爬虫监控程序...")
-#     monitor_status()
-# 初始化 MonitorManager 和 DBManager
-
-
 monitor_manager = MonitorManager()
 db_manager = DBManager()
-HEARTBEAT_TIMEOUT = 30  # 心跳超时时间（秒）
+HEARTBEAT_TIMEOUT = 20  # 心跳超时时间（秒）
 
 def show_queue_status():
     """显示任务队列状态"""
@@ -141,7 +89,7 @@ def show_crawler_status():
         else:
             print(f"❓ 未找到进程 {pid} 的状态信息")
 
-def monitor_status(interval=10):
+def monitor_status(interval=5):
     """主监控循环，每隔 interval 秒刷新一次状态信息"""
     try:
         while True:
@@ -157,4 +105,3 @@ def monitor_status(interval=10):
 if __name__ == "__main__":
     print("🚀 启动爬虫监控程序...")
     monitor_status()
-    # 进程id有问题

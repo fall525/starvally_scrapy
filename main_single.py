@@ -1,10 +1,17 @@
 import os
 import time
-from distributed_distribution_manager import DistributedDistributionManager
 from db_manager import DBManager
+from redis_manager import RedisManager
 import settings
 
+# # 配置参数
+# SEED_URLS = [
+#     "https://zh.stardewvalleywiki.com/Stardew_Valley_Wiki"
+# ]
 
+# # 初始化数据库和缓存
+# db_manager = DBManager(host="127.0.0.1", port=27017, db_name="vally",col_name='vally1')
+# redis_manager = RedisManager(host="127.0.0.1", port=6379, db=0)
 db_manager = DBManager(
     host=settings.MONGODB_HOST,
     port=settings.MONGODB_PORT,
@@ -12,7 +19,7 @@ db_manager = DBManager(
     col_name=settings.MONGODB_COLL_NAME
 )
 
-url_manager = DistributedDistributionManager(
+redis_manager = RedisManager(
     host=settings.REDIS_HOST,
     port=settings.REDIS_PORT,
     db=settings.REDIS_DB
@@ -20,10 +27,10 @@ url_manager = DistributedDistributionManager(
 
 # 推送种子 URL 到 Redis
 def push_seed_urls(seed_urls):
-    if url_manager.queue_size() == 0:
+    if redis_manager.queue_size() == 0:
         for url in seed_urls:
-            if not url_manager.is_visited(url):
-                url_manager.push_url(url)
+            if not redis_manager.is_visited(url):
+                redis_manager.push_url(url)
                 print(f"🌱 推送种子 URL: {url}")
             else:
                 print(f"🚫 URL 已经存在: {url}")
@@ -48,7 +55,7 @@ def main():
     # 简单监控
     while True:
         time.sleep(10)
-        url_count = url_manager.queue_size()
+        url_count = redis_manager.queue_size()
         page_count = db_manager.count_pages()
         print(f"📊 当前待爬取URL数量: {url_count}, 已存储页面数量: {page_count}")
 
