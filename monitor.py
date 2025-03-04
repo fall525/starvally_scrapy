@@ -2,7 +2,7 @@ import time
 from redis_manager import RedisManager
 from db_manager import DBManager
 
-# 解决一下心动缺失的问题
+
 class MonitorManager:
     def __init__(self, host="127.0.0.1", port=6379, db=0):
         self.redis_client = RedisManager(host, port, db).redis_client

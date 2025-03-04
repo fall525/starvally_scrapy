@@ -3,13 +3,10 @@ import os
 import re
 import requests
 from bs4 import BeautifulSoup
+import settings
 from distributed_distribution_manager import DistributedDistributionManager
 from db_manager import DBManager
 from settings import DISTRIBUTED_NODE_COUNT, URL_DISTRIBUTION_STRATEGY,PRIORITY_RULES
-
-# 初始化分发管理器和数据库连接
-distribution_manager = DistributedDistributionManager()
-db_manager = DBManager()
 
 # 获取当前爬虫进程的 ID 和节点 ID (用于轮询分配策略)
 pid = os.getpid()
@@ -17,6 +14,29 @@ node_id = pid % DISTRIBUTED_NODE_COUNT
 
 # 设置 User-Agent，防止封禁
 HEADERS = {"User-Agent": "Mozilla/5.0"}
+db_manager = DBManager(
+    host=settings.MONGODB_HOST,
+    port=settings.MONGODB_PORT,
+    db_name=settings.MONGODB_DB_NAME,
+    col_name=settings.MONGODB_COLL_NAME
+)
+
+distribution_manager = DistributedDistributionManager(
+    host=settings.REDIS_HOST,
+    port=settings.REDIS_PORT,
+    db=settings.REDIS_DB
+)
+# 推送种子 URL 到 Redis
+def push_seed_urls(seed_urls):
+    if distribution_manager.queue_size() == 0:
+        for url in seed_urls:
+            if not distribution_manager.is_visited(url):
+                distribution_manager.push_url(url)
+                print(f"🌱 推送种子 URL: {url}")
+            else:
+                print(f"🚫 URL 已经存在: {url}")
+    else:
+        print("📥 Redis 队列中已有任务，无需推送种子 URL")
 
 def update_crawler_status(status, current_url=None):
     """更新当前爬虫进程的状态到 Redis"""
@@ -79,6 +99,7 @@ def determine_url_priority(url):
 
 def process_url():
     """主爬取逻辑，从任务队列获取 URL，爬取并存储"""
+    push_seed_urls(settings.SEED_URLS)
     try:
         while True:
             send_heartbeat()  # 发送心跳信号
@@ -88,7 +109,7 @@ def process_url():
                 pass  # 处理所有未分发的 URL，直到队列为空
 
             # 从任务队列获取 URL
-            url = distribution_manager.pop_url()  # ✅ 确保调用与类方法匹配
+            url = distribution_manager.pop_url()  # 
             if not url:
                 print("🌟 URL 队列为空，等待新任务...")
                 update_crawler_status("idle")
@@ -116,7 +137,7 @@ def process_url():
                 for link in links:
                     if not distribution_manager.is_visited(link):
                         priority = determine_url_priority(link)
-                        distribution_manager.push_url_to_master(link)  # ✅ 只推送到 `url_master_queue`
+                        distribution_manager.push_url_to_master(link)  #只推送到 `url_master_queue`
 
                 print(f"✅ 爬取成功: {url} (提取 {len(links)} 个站内链接)")
             else:

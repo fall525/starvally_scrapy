@@ -27,4 +27,3 @@ class DBManager:
     def count_pages(self):
         """返回当前存储的页面数量"""
         return self.collection.count_documents({})
-
