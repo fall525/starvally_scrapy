@@ -26,7 +26,9 @@ CRAWLER_RETRY_DELAY = 5  # 任务失败后的重试延迟（秒）
 
 # 分布式 URL 分发策略
 # "fifo" (先进先出), "priority" (优先级队列), "round_robin" (轮询分配)
-URL_DISTRIBUTION_STRATEGY = "priority"
+URL_DISTRIBUTION_STRATEGY = "round_robin"
+MACHINE_NUM=1
+PRIORITY_THRESHOLD=4
 # URL 优先级规则
 PRIORITY_RULES = {
     1: [r"/User_talk"],  # 最高优先级

@@ -5,7 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 from distributed_distribution_manager import DistributedDistributionManager
 from db_manager import DBManager
-from settings import URL_DISTRIBUTION_STRATEGY, DISTRIBUTED_NODE_COUNT, PRIORITY_RULES
+from settings import DISTRIBUTED_NODE_COUNT, URL_DISTRIBUTION_STRATEGY,PRIORITY_RULES
 
 # 初始化分发管理器和数据库连接
 distribution_manager = DistributedDistributionManager()
