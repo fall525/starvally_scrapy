@@ -6,9 +6,7 @@ import settings
 
 # # 配置参数
 # SEED_URLS = [
-#     "https://zh.stardewvalleywiki.com/Stardew_Valley_Wiki",
-#     "https://zh.stardewvalleywiki.com/农场",
-#     "https://zh.stardewvalleywiki.com/作物"
+#     "https://zh.stardewvalleywiki.com/Stardew_Valley_Wiki"
 # ]
 
 # # 初始化数据库和缓存

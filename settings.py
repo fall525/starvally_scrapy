@@ -13,9 +13,7 @@ MONGODB_COLL_NAME="vally1"
 
 # 爬虫配置
 SEED_URLS = [
-    "https://zh.stardewvalleywiki.com/Stardew_Valley_Wiki",
-    "https://zh.stardewvalleywiki.com/农场",
-    "https://zh.stardewvalleywiki.com/作物"
+    "https://zh.stardewvalleywiki.com/Stardew_Valley_Wiki"
 ]
 
 # 爬虫任务调度
